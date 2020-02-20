@@ -1,44 +1,66 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# The MERN Stack Evolved 
 
-## Available Scripts
+This repository contains supporting resources for a workshop on migrating Node.js Express applications to [MongoDB Realm. ](https://www.mongodb.com/cloud/stitch)
 
-In the project directory, you can run:
+While the high level steps are outlined here, please see the [MERN Stack Evolved workshop document](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit?usp=sharing) for the details of each step.
 
-### `npm start`
+## Architecture
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Current State
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+### Future State
 
-### `npm test`
+## Step 1: Provision the Backend
+In this step you will provision an [Atlas](https://www.mongodb.com/cloud/stitch) cluster named **Todo** and a Realm application named **Todo**. 
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+See the [Step 1](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.k9sxni8q8v7t) of the workshop document for detailed instructions.
 
-### `npm run build`
+## Step 2: Download and Run the Front-End
+In this step we download and fire up the front-end. 
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```
+git clone https://github.com/wbleonard/mern-stack-part-04 todo-app
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+cd todo-app
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+npm install
 
-### `npm run eject`
+npm start
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+_Note, the UI will take several seconds to load because it's looking for a back-end that doesn't yet exist._
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+See the [Step 2](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.8azct1u6fh2y) of the workshop document for detailed instructions.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Step 2 (Option): Run the Front-End in CodeSandbox
+If you don't have and are not inclined to install `git` and `npm`, you have the option to complete the workshop in an on-line IDE such as [CodeSandbox](https://codesandbox.io/). 
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+https://codesandbox.io/s/github/wbleonard/mern-stack-part-04
 
-## Learn More
+## Step 3: Create Todo
+In this step we implement that API to create a todo. Create a [Realm Service](https://docs.mongodb.com/stitch/services/) named **Todo** and an [Incoming Webhook](https://docs.mongodb.com/stitch/services/#incoming-webhooks) named **add** with the following function code:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+exports = function(payload, response) {
+  
+    var todo = {};
+    var result = {};
+      
+    if (payload.body) {
+  
+      // Parse the body to get the todo document...
+      todo = EJSON.parse(payload.body.text());
+      console.log("Parsed Payload body: ", JSON.stringify(todo));
+        
+      // Get a reference to the todos database and collection...
+      var collection = context.services.get("mongodb-atlas").db("todos").collection("todos");
+    
+      // Insert the new todo...
+      return collection.insertOne(todo);
+        
+    }
+    return  result;
+  };
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+See the [Step 3](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.eevhio1lfzo1) of the workshop document for detailed instructions.
