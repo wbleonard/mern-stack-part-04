@@ -88,12 +88,15 @@ exports = async function(payload, response) {
 See the [Step 4](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.ywtdr24jlb1g) of the workshop document for detailed instructions.
 
 ## Step 5: Edit Todos
-In this step we implement the final API that allows us to edit the todos. This step introduces a wrinkle, because the client uses a path parameter, but [Realm doesn't yet support path parameters](https://mongodb.canny.io/mongodb-stitch/p/ability-to-set-parameters-through-a-webhook-path). As a workaround, we’ll simply pass this value as an argument to an edit webhook.
+In this step we implement the final APIs that allows us to edit the todos. This step introduces a wrinkle, because the client uses a path parameter, but [Realm doesn't yet support path parameters](https://mongodb.canny.io/mongodb-stitch/p/ability-to-set-parameters-through-a-webhook-path). As a workaround, we’ll simply pass this value as an argument to the webhook.
+
+There are two APIs associated with this component: one to load the todo to edit and another to update the todo with the changes.
+
+### Load Todo
 
 Add a new Incoming Webhook named **edit** to the existing Todo Realm Service with the following code:
 
 ```
-
 exports = function(payload, response) {
   
   const id = payload.query.id || '';
@@ -103,8 +106,36 @@ exports = function(payload, response) {
   var collection = context.services.get("mongodb-atlas").db("todos").collection("todos");
   return collection.findOne({_id:BSON.ObjectId(id)});
 };
-
 ```
 
-See the [Step 5](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.d7vi6qk0bl0) of the workshop document for detailed instructions.
+See the [Step 5 - Load Todo](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.t8vpsiv55j5k) of the workshop document for detailed instructions.
+
+### Update Todo
+
+Add a new Incoming Webhook named **update** to the existing Todo Realm Service with the following code:
+
+```
+exports = function(payload, response) {
+  var todo = {};
+  var result = {};
+    
+  if (payload.body) {
+    
+    // Parse the body to get the todo document...
+    todo = EJSON.parse(payload.body.text());
+    console.log("Parsed Payload body: ", JSON.stringify(todo));
+    
+    var collection = context.services.get("mongodb-atlas").db("todos").collection("todos");
+  
+    console.log("todo_id: ", todo.todo_id);
+  
+    // Update the todo...
+    return collection.updateOne({_id:BSON.ObjectId(todo.todo_id)}, {$set: todo});
+      
+  }
+  return  result;
+};
+```
+ee the [Step 5 - Update Todo](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.54zvf6jfr8gg) of the workshop document for detailed instructions.
+
 
