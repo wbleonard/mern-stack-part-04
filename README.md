@@ -64,3 +64,47 @@ exports = function(payload, response) {
 ```
 
 See the [Step 3](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.eevhio1lfzo1) of the workshop document for detailed instructions.
+
+## Step 4: List Todos
+In this step we implement the API that lists the todos (and we'll be able to see the todo created earlier in our app).
+
+Add a new Incoming Webhook named **todos** to the existing Todo Realm Service with the following function:
+
+```
+
+exports = async function(payload, response) {
+  var collection = context.services.get("mongodb-atlas").db("todos").collection("todos");
+  var todos = await collection.find().toArray();
+
+  // Convert the ObjectIds to strings...
+  todos.forEach(todo => {
+    todo._id = todo._id.toString();
+  });
+  
+  return todos;
+};
+```
+
+See the [Step 4](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.ywtdr24jlb1g) of the workshop document for detailed instructions.
+
+## Step 5: Edit Todos
+In this step we implement the final API that allows us to edit the todos. This step introduces a wrinkle, because the client uses a path parameter, but [Realm doesn't yet support path parameters](https://mongodb.canny.io/mongodb-stitch/p/ability-to-set-parameters-through-a-webhook-path). As a workaround, we’ll simply pass this value as an argument to an edit webhook.
+
+Add a new Incoming Webhook named **edit** to the existing Todo Realm Service with the following code:
+
+```
+
+exports = function(payload, response) {
+  
+  const id = payload.query.id || '';
+
+  console.log ("Id received = " + id);
+  
+  var collection = context.services.get("mongodb-atlas").db("todos").collection("todos");
+  return collection.findOne({_id:BSON.ObjectId(id)});
+};
+
+```
+
+See the [Step 5](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.d7vi6qk0bl0) of the workshop document for detailed instructions.
+
