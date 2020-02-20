@@ -25,7 +25,7 @@ cd todo-app
 
 npm install
 
-npm start
+nodemon start
 ```
 
 _Note, the UI will take several seconds to load because it's looking for a back-end that doesn't yet exist._
