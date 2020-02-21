@@ -136,6 +136,19 @@ exports = function(payload, response) {
   return  result;
 };
 ```
-ee the [Step 5 - Update Todo](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.54zvf6jfr8gg) of the workshop document for detailed instructions.
+See the [Step 5 - Update Todo](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.54zvf6jfr8gg) of the workshop document for detailed instructions.
 
 
+# What About the Front-End?
+
+## Step 1: Create a Build
+In this step, the build is optimized for deployment. See the React documentation on [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+```
+$ npm run build
+```
+
+## Step 2: Deploy the Front-end
+In this step you'll enable Realm [Static Hosting](https://docs.mongodb.com/stitch/hosting/) and upload the contents of the build directory, 
+
+See the [Step 2 - Deploy the Front-end](https://docs.google.com/document/d/1BZfDNckDjYrC2EByV1eSfQwutXUZlokg0ku01Rtwhzg/edit#heading=h.cfj2wno8utpg) of the workshop document for detailed instructions.
